@@ -12,29 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startServer = void 0;
-const express_1 = __importDefault(require("express"));
-const apollo_server_express_1 = require("apollo-server-express");
-const ping_1 = require("./resolvers/ping");
-require("reflect-metadata");
-const type_graphql_1 = require("type-graphql");
-const typeorm_1 = require("./config/typeorm");
-const studentResolver_1 = require("./resolvers/studentResolver");
-function startServer() {
+exports.getDataSource = void 0;
+const typeorm_1 = require("typeorm");
+const path_1 = __importDefault(require("path"));
+function getDataSource() {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, typeorm_1.getDataSource)();
-        const app = (0, express_1.default)();
-        const server = new apollo_server_express_1.ApolloServer({
-            schema: yield (0, type_graphql_1.buildSchema)({
-                resolvers: [
-                    ping_1.PingResolver,
-                    studentResolver_1.StudentResolver
-                ]
-            }),
-            context: ({ req, res }) => ({ req, res })
+        const appDataSource = new typeorm_1.DataSource({
+            type: "postgres",
+            host: "localhost",
+            port: 5432,
+            username: "postgres",
+            password: "admin",
+            database: "DEMO_API",
+            entities: [
+                path_1.default.join(__dirname, "../models/**.ts")
+            ],
+            synchronize: true
         });
-        server.applyMiddleware({ app, path: '/graphql' });
-        return app;
+        try {
+            yield appDataSource.initialize();
+            console.log("DB initialized");
+            return appDataSource;
+        }
+        catch (err) {
+            console.error("DB initialization failed");
+            console.error(err);
+        }
     });
 }
-exports.startServer = startServer;
+exports.getDataSource = getDataSource;

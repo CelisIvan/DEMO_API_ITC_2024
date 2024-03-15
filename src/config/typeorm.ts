@@ -1,21 +1,28 @@
 import { DataSource } from "typeorm"
+import path from "path";
 
-export function getDataSource(){
-    const AppDataSource = new DataSource({
+export async function getDataSource(){
+    const appDataSource = new DataSource({
         type: "postgres",
         host: "localhost",
-        port: 3306,
-        username: "test",
-        password: "test",
-        database: "test",
+        port: Number(process.env.PORT_DB),
+        username: process.env.USER_NAME_DB,
+        password: process.env.USER_NAME_PWD,
+        database: "DEMO_API",
+        entities: [
+            path.join(__dirname, "../models/**.ts")
+        ],
+        synchronize: true
     })
+    try{
+        await appDataSource.initialize()
+        console.log("DB initialized")
+        return appDataSource
+    }catch (err) {
+        console.error("DB initialization failed")
+        console.error(err)
+    }
     
-    AppDataSource.initialize()
-        .then(() => {
-            console.log("Data Source has been initialized!")
-        })
-        .catch((err) => {
-            console.error("Error during Data Source initialization", err)
-        })
+    
 
 } 

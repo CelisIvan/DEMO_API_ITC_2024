@@ -19,17 +19,13 @@ const ping_1 = require("./resolvers/ping");
 require("reflect-metadata");
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("./config/typeorm");
-const studentResolver_1 = require("./resolvers/studentResolver");
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         (0, typeorm_1.getDataSource)();
         const app = (0, express_1.default)();
         const server = new apollo_server_express_1.ApolloServer({
             schema: yield (0, type_graphql_1.buildSchema)({
-                resolvers: [
-                    ping_1.PingResolver,
-                    studentResolver_1.StudentResolver
-                ]
+                resolvers: [ping_1.PingResolver]
             }),
             context: ({ req, res }) => ({ req, res })
         });

@@ -16,13 +16,13 @@ let PingResolver = class PingResolver {
         return "pong";
     }
 };
-exports.PingResolver = PingResolver;
 __decorate([
     (0, type_graphql_1.Query)(() => String),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], PingResolver.prototype, "ping", null);
-exports.PingResolver = PingResolver = __decorate([
+PingResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], PingResolver);
+exports.PingResolver = PingResolver;
